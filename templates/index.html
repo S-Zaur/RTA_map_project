@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Карта ДТП</title>
+	
+	{% load static %}
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/topojson.v0.min.js"></script>
+	<!-- <script type="text/javascript" src="http://d3js.org/topojson.v1.min.js"></script> -->
+</head>
+<body>
+	<div id="my_header" class="shadow">
+		<div id="header_inners">
+			<img src="logo.png">
+			<button onclick="requestData();">Update</button>
+			<div id="header_refs">
+				<a class="header_ref" href="analytics.html">Аналитика</a>
+				<a class="header_ref" href="#">О проекте</a>
+				<a class="header_ref" href="#">О нас</a>
+			</div>
+		</div>
+	</div>
+	<button onclick="requestData(3);">3</button>
+	<button onclick="requestData(7);">7</button>
+	<script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+	<script>
+		regionData = {{ my_data|safe }};
+		mapJson = {{ map_data|safe }};
+		mapRedraw(mapJson, regionData);
+		console.log('index.html script');
+	</script>
+</body>
+</html>

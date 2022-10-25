@@ -14,25 +14,78 @@
 	<!-- <script type="text/javascript" src="http://d3js.org/topojson.v1.min.js"></script> -->
 </head>
 <body>
-	<div id="my_header" class="shadow">
-		<div id="header_inners">
-			<img src="logo.png">
-			<button onclick="requestData();">Update</button>
-			<div id="header_refs">
-				<a class="header_ref" href="analytics.html">Аналитика</a>
-				<a class="header_ref" href="#">О проекте</a>
-				<a class="header_ref" href="#">О нас</a>
-			</div>
-		</div>
-	</div>
-	<button onclick="requestData(3);">3</button>
-	<button onclick="requestData(7);">7</button>
+    <header class="header_inners">
+        <img src="{% static 'files/logo.png' %}">
+        <div id="header_refs">
+           <a class="header_ref" href="#">Аналитика</a>
+           <a class="header_ref" href="#">О проекте</a>
+           <a class="header_ref" href="#">О нас</a>
+        </div>
+    </header>
+
+	<div class="dropdown">
+    <button onclick="myFunction()" class="dropbtn">Фильтры</button>
+        <form action="main.html" method="GET" class="select-form">
+        <div id="myDropdown" class="dropdown-content">
+
+
+            <div class="severity_menu">
+                <span>Тяжесть ДТП</span>
+                <div>
+                    <input type="checkbox" name="checkbox_dtp" value="Легкий">
+                    <span>Лёгкий</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_dtp" value="С погибшими">
+                    <span>С погибшими</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_dtp" value="Тяжёлый">
+                    <span>Тяжёлый</span>
+                </div>
+            </div>
+            <div class="severity_menu">
+                <span>освещенность</span>
+                <div>
+                    <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение включено">
+                    <span>В темное время суток, освещение включено</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение не включено">
+                    <span>В темное время суток, освещение не включено</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение отсутствует">
+                    <span>В темное время суток, освещение отсутствует</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_dtp2" value="Светлое время суток">
+                    <span>Светлое время суток</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_dtp2" value="Сумерки">
+                    <span>Сумерки</span>
+                </div>
+            </div>
+            <button type="button" class="submit" onclick="requestData(0);">Отправить</button>
+        </div>
+        </form>
+    </div>
 	<script type="text/javascript" src="{% static 'js/index.js' %}"></script>
 	<script>
 		regionData = {{ my_data|safe }};
 		mapJson = {{ map_data|safe }};
-		mapRedraw(mapJson, regionData);
-		console.log('index.html script');
-	</script>
+
+        let ma = Math.max(...Object.values(regionData))
+        let mi = Math.min(...Object.values(regionData))
+        let delta = ma - mi
+        console.log(ma)
+        color_domain = [mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
+        ext_color_domain = [mi, mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
+        paint = d3.scale.threshold()
+            .domain(color_domain)
+            .range(["#00FF00", "#33CC00", "#669900", "#996600", "#CC3300", "#FF0000"]);
+	    mapRedraw(mapJson, regionData);
+    </script>
 </body>
 </html>

@@ -1,3 +1,5 @@
+/*
+
 * {
   margin: 0;
   padding: 0;
@@ -45,6 +47,171 @@ body {
 .city {
   font: 10px sans-serif;
   font-weight: bold;
+}
+
+.legend {
+  font-size: 12px;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 150px;
+  height: 25px;
+  padding: 2px;
+  font-size: 10px;
+  background: #FFFFE0;
+  border: 1px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #198CFF;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/*HEADER*/
+
+header {
+    width: 100%;
+    background: #ffffff;
+    height: 90px;
+}
+
+header img {
+    margin: 5px 5px 5px 5px;
+}
+
+.header_inners {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header_ref {
+    font-size: 24px;
+    font-weight: 500;
+    margin-right: 25px;
+    color: black;
+    text-decoration: none;
+}
+
+/*SIDEBAR FILTER*/
+
+.dropbtn {
+    background-color: white;
+    color: black;
+    width: 400px;
+    padding: 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin: 30px;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    width: 380px;
+    padding: 30px 0 30px 20px;
+    background-color: rgba(255, 255, 255, 0.25);
+    color: white;
+    z-index: 1;
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
+
+.color_menu button {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+#btn_black {background-color: black}
+#btn_blue {background-color: #0000FF}
+#btn_brown {background-color: #7F3F00}
+#btn_gray {background-color: #7F7F7F}
+#btn_green {background-color: #00FF00}
+#btn_pink {background-color: #FF006B}
+#btn_white {background-color: white}
+#btn_orange {background-color: #FF7F00}
+#btn_purple {background-color: #7F00FF}
+#btn_yellow {background-color: #FFFF00;}
+#btn_red {background-color: #FF0000}
+#btn_no_colour {background-color: white}
+
+.color_menu button:hover {
+    opacity: 0.75;
+}
+
+.severity_menu .btn {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.participant_category_menu .btn {
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+.participant_category_menu img {
+    width: 40px;
+    height: 40px;
+}
+
+.gender_menu .btn {
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+.gender_menu img {
+    height: 40px;
+}
+
+.submit {
+    width: 80px;
+    height: 40px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    margin: 20px 10px 0 250px;
+}
+
+
+
+path {
+  stroke:white;
+  stroke-width: 1px;
 }
 
 .legend {

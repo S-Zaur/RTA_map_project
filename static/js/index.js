@@ -1,5 +1,9 @@
 //  -------------------------  FUNCTIONS  -------------------------  //
 
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
 function getRandomInt(max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max + 1));
@@ -7,12 +11,20 @@ function getRandomInt(max) {
 
 function requestData(number) {
     var url = 'update_params';
-    var prm_0 = number;
-    var prm_1 = number;
 
-    console.log(prm_0);
-    console.log(prm_1);
-    var prmstring = JSON.stringify({"prm_0" : prm_0, "prm_1" : prm_1 })
+    var checkedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_dtp]:checked'), ({value}) => encodeURIComponent(value));
+    var checkedBoxes2 = Array.from(document.querySelectorAll('input[name=checkbox_dtp2]:checked'), ({value}) => encodeURIComponent(value));
+    console.log(checkedBoxes);
+    console.log(checkedBoxes2);
+    //console.log(prm_0);
+    //console.log(prm_1);
+    var prmstring
+    if (checkedBoxes.length != 0) {
+        prmstring = JSON.stringify({"prm_0": "severity", "prm_1": checkedBoxes})  //  checkedBoxes  на русский жалуется
+    } else {
+        prmstring = JSON.stringify({"prm_0": "light", "prm_1": checkedBoxes2})
+    }
+    console.log(prmstring);
 
     fetch(url, {
         method: 'GET',
@@ -22,62 +34,72 @@ function requestData(number) {
             'X-Requested-With': 'XMLHttpRequest',
         },
     })
-    .then(response => {
-        //console.log('got something');
-        return response.json();
-    })
-    .then(data => {
-        //  REDRAW MAP
-        mapRedraw(mapJson, data['my_data']);
-    })
+        .then(response => {
+            //console.log('got something');
+            return response.json();
+        })
+        .then(data => {
+            //  REDRAW MAP
+            console.log('redrew');
+            let ma = Math.max(...Object.values(data['my_data']))
+            let mi = Math.min(...Object.values(data['my_data']))
+            let delta = ma - mi
+            console.log(ma)
+            color_domain = [mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
+            ext_color_domain = [mi, mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
+            paint = d3.scale.threshold()
+                .domain(color_domain)
+                .range(["#00FF00", "#33CC00", "#669900", "#996600", "#CC3300", "#FF0000"]);
+            console.log(color_domain)
+            mapRedraw(mapJson, data['my_data']);
+        })
 }
 
 function mapRedraw(map, data) {
-	var regionValues = {};
-	//console.log(typeof data);
-	//console.log(data);
+    var regionValues = {};
+    //console.log(typeof data);
+    //console.log(data);
 
-	for (var key in data) {
-	    //console.log(key)
-		regionValues[key] = +data[key];
-	}
+    for (var key in data) {
+        //console.log(key)
+        regionValues[key] = +data[key];
+    }
+    
 
-	//  TODO colors max min
+    //console.log(region_values);
 
-	//console.log(region_values);
-
-	//  Drawing Russia with cpoetry run python manage.py runserverolors
+    //  Drawing Russia with cpoetry run python manage.py runserverolors
 
     mapSvg.selectAll("*").remove();
 
-	mapSvg.append("g")
-	.attr("class", "region")
-	.selectAll("path")
-	.data(topojson.object(map, map.objects.russia).geometries)
-	.enter().append("path")
-	.attr("d", path)
-	.style("fill", function(d) {
-		return paint(regionValues[d.properties.region]);
-	})
-	.style("opacity", 0.8)  //  connect
+    mapSvg.append("g")
+        .attr("class", "region")
+        .selectAll("path")
+        .data(topojson.object(map, map.objects.russia).geometries)
+        .enter().append("path")
+        .attr("d", path)
+        .style("fill", function (d) {
+            return paint(regionValues[d.properties.region]);
+        })
+        .style("opacity", 0.8)  //  connect
 
-	///*  //  mouse things
-	.on("mouseover", function(d) {
-        d3.select(this).transition().duration(300).style("opacity", 1);
-        tooltipDiv.transition().duration(300)
-        .style("opacity", 1)
-        //tooltipDiv.text(nameById[d.properties.region] + " : " + rateById[d.properties.region])
-        tooltipDiv.text("" + " : " + regionValues[d.properties.region])
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY -30) + "px");
-    })
-    .on("mouseout", function() {
-        d3.select(this)
-        .transition().duration(300)
-        .style("opacity", 0.8);
-        tooltipDiv.transition().duration(300)
-        .style("opacity", 0);
-    })
+        ///*  //  mouse things
+        .on("mouseover", function (d) {
+            d3.select(this).transition().duration(300).style("opacity", 1);
+            tooltipDiv.transition().duration(300)
+                .style("opacity", 1)
+            //tooltipDiv.text(nameById[d.properties.region] + " : " + rateById[d.properties.region])
+            tooltipDiv.text(d.properties.region + " : " + regionValues[d.properties.region]+'%')
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 30) + "px");
+        })
+        .on("mouseout", function () {
+            d3.select(this)
+                .transition().duration(300)
+                .style("opacity", 0.8);
+            tooltipDiv.transition().duration(300)
+                .style("opacity", 0);
+        })
     //*/
 
     /*  //  points
@@ -105,51 +127,59 @@ function mapRedraw(map, data) {
 
 var width = document.documentElement.scrollWidth, height = 768;  //  960 500
 
-var color_domain = [50, 150, 350, 750, 1500]
-var ext_color_domain = [0, 50, 150, 350, 750, 1500]
+var color_domain = [20, 40, 60, 80, 100]
+var ext_color_domain = [0, 20, 40, 60, 80, 100]
 var legend_labels = ["< 50", "50+", "150+", "350+", "750+", "> 1500"]  //  will be changed for percentage ig
 var paint = d3.scale.threshold()
-.domain(color_domain)
-.range(["#7FFF7F", "#92E55B", "#AFCC3D", "#B29523", "#99460F", "#7F0000"]);
+    .domain(color_domain)
+    .range(["#7FFF7F", "#92E55B", "#AFCC3D", "#B29523", "#99460F", "#7F0000"]);
 
 //  -------------------------  CONTAINERS  -------------------------  //
 
 var mapSvg = d3.select("body").append("svg")
-.attr("width", width)
-.attr("height", height)
-.style("margin", "10px auto");
+    .attr("width", width)
+    .attr("height", height)
+    .style("margin", "10px auto");
 
 var projection = d3.geo.albers()
-.rotate([-105, 0])
-.center([-10, 65])
-.parallels([52, 64])
-.scale(900)
-.translate([width / 2, height / 2]);
+    .rotate([-105, 0])
+    .center([-10, 65])
+    .parallels([52, 64])
+    .scale(900)
+    .translate([width / 2, height / 2]);
 
 var path = d3.geo.path().projection(projection);
 
 var tooltipDiv = d3.select("body").append("div")
-.attr("class", "tooltip")               
-.style("opacity", 0);
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 var legend = mapSvg.selectAll("g.legend")
-.data(ext_color_domain)
-.enter().append("g")
-.attr("class", "legend");
+    .data(ext_color_domain)
+    .enter().append("g")
+    .attr("class", "legend");
 
 var ls_w = 20, ls_h = 20;
 
 legend.append("rect")
-.attr("x", 20)
-.attr("y", function(d, i) { return height - (i * ls_h) - 2 * ls_h; } )
-.attr("width", ls_w)
-.attr("height", ls_h)
-.style("fill", function(d, i) { return paint(d); })
-.style("opacity", 0.8);
+    .attr("x", 20)
+    .attr("y", function (d, i) {
+        return height - (i * ls_h) - 2 * ls_h;
+    })
+    .attr("width", ls_w)
+    .attr("height", ls_h)
+    .style("fill", function (d, i) {
+        return paint(d);
+    })
+    .style("opacity", 0.8);
 
 legend.append("text")
-.attr("x", 50)
-.attr("y", function(d, i) { return height - (i * ls_h) - ls_h - 4; } )
-.text(function(d, i) { return legend_labels[i]; } );
+    .attr("x", 50)
+    .attr("y", function (d, i) {
+        return height - (i * ls_h) - ls_h - 4;
+    })
+    .text(function (d, i) {
+        return legend_labels[i];
+    });
 
 //  -------------------------  EVERYTHING ELSE  -------------------------  //

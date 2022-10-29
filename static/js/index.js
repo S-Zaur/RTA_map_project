@@ -14,18 +14,18 @@ function requestData(number) {
 
     var checkedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_dtp]:checked'), ({value}) => encodeURIComponent(value));
     var checkedBoxes2 = Array.from(document.querySelectorAll('input[name=checkbox_dtp2]:checked'), ({value}) => encodeURIComponent(value));
-    console.log(checkedBoxes);
-    console.log(checkedBoxes2);
-    //console.log(prm_0);
-    //console.log(prm_1);
+    var d1 = document.querySelector('input[id="date1"]').value;
+    var d2 = document.querySelector('input[id="date2"]').value;
+    console.log(d1, d2)
     var prmstring
-    if (checkedBoxes.length != 0) {
+    if (checkedBoxes.length !== 0) {
         prmstring = JSON.stringify({"prm_0": "severity", "prm_1": checkedBoxes})  //  checkedBoxes  на русский жалуется
-    } else {
+    } else if (checkedBoxes2.length !== 0) {
         prmstring = JSON.stringify({"prm_0": "light", "prm_1": checkedBoxes2})
+    } else {
+        prmstring = JSON.stringify({"prm_0": "date", "prm_1": d1, "prm_2": d2})
     }
-    console.log(prmstring);
-
+    console.log(prmstring)
     fetch(url, {
         method: 'GET',
         headers: {
@@ -40,17 +40,14 @@ function requestData(number) {
         })
         .then(data => {
             //  REDRAW MAP
-            console.log('redrew');
             let ma = Math.max(...Object.values(data['my_data']))
             let mi = Math.min(...Object.values(data['my_data']))
             let delta = ma - mi
-            console.log(ma)
             color_domain = [mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
             ext_color_domain = [mi, mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
             paint = d3.scale.threshold()
                 .domain(color_domain)
                 .range(["#00FF00", "#33CC00", "#669900", "#996600", "#CC3300", "#FF0000"]);
-            console.log(color_domain)
             mapRedraw(mapJson, data['my_data']);
         })
 }
@@ -64,7 +61,7 @@ function mapRedraw(map, data) {
         //console.log(key)
         regionValues[key] = +data[key];
     }
-    
+
 
     //console.log(region_values);
 
@@ -89,7 +86,7 @@ function mapRedraw(map, data) {
             tooltipDiv.transition().duration(300)
                 .style("opacity", 1)
             //tooltipDiv.text(nameById[d.properties.region] + " : " + rateById[d.properties.region])
-            tooltipDiv.text(d.properties.region + " : " + regionValues[d.properties.region]+'%')
+            tooltipDiv.text(d.properties.region + " : " + regionValues[d.properties.region] + '%')
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 30) + "px");
         })

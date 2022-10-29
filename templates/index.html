@@ -30,7 +30,7 @@
 
 
             <div class="severity_menu">
-                <span>Тяжесть ДТП</span>
+                <strong>Тяжесть ДТП</strong>
                 <div>
                     <input type="checkbox" name="checkbox_dtp" value="Легкий">
                     <span>Лёгкий</span>
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="severity_menu">
-                <span>освещенность</span>
+                <strong>Освещенность</strong>
                 <div>
                     <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение включено">
                     <span>В темное время суток, освещение включено</span>
@@ -66,6 +66,10 @@
                     <input type="checkbox" name="checkbox_dtp2" value="Сумерки">
                     <span>Сумерки</span>
                 </div>
+            </div>
+            <div>
+                <input type="date" id="date1" name="date"/>
+                <input type="date" id="date2" name="date"/>
             </div>
             <button type="button" class="submit" onclick="requestData(0);">Отправить</button>
         </div>

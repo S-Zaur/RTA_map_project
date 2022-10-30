@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Карта ДТП - О нас</title>
+
+    {% load static %}
+
+	<link rel="stylesheet" href="{% static 'css/about_us.css' %}">
+</head>
+<body>
+    <header class="header_inners">
+        <a href="/"><img src="{% static 'files/logo.png' %}"></a>
+        <div id="header_refs">
+            <a class="header_ref" href="/analytics/">Аналитика</a>
+            <a class="header_ref" href="/about_project/">О проекте</a>
+            <a class="header_ref" href="/about_us/">О нас</a>
+        </div>
+    </header>
+    <div class="main">
+        <img src="{% static 'files/bgblurredmap.png' %}">
+        <div class="fonWhite">
+            <h1 class="oProject">О нас</h1>
+            <div class="text">
+                <p>Наша команда состоит из студетов 3 курса, обучающихся на направлении “Математическое обеспечение и администрирование информационных систем” при Тюменском Государственном университете.</p>
+            </div>
+       </div>
+    </div>
+</body>
+</html>

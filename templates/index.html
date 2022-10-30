@@ -5,6 +5,7 @@
 	<title>Карта ДТП</title>
 	
 	{% load static %}
+
 	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 	
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500" rel="stylesheet" type="text/css">
@@ -15,81 +16,65 @@
 </head>
 <body>
     <header class="header_inners">
-        <img src="{% static 'files/logo.png' %}">
+        <a href="/"><img src="{% static 'files/logo.png' %}"></a>
         <div id="header_refs">
-           <a class="header_ref" href="#">Аналитика</a>
-           <a class="header_ref" href="#">О проекте</a>
-           <a class="header_ref" href="#">О нас</a>
+            <a class="header_ref" href="/analytics/">Аналитика</a>
+            <a class="header_ref" href="/about_project/">О проекте</a>
+            <a class="header_ref" href="/about_us/">О нас</a>
         </div>
     </header>
-
 	<div class="dropdown">
-    <button onclick="myFunction()" class="dropbtn">Фильтры</button>
+        <button onclick="showHidePanel()" class="dropbtn">Фильтры</button>
         <form action="main.html" method="GET" class="select-form">
-        <div id="myDropdown" class="dropdown-content">
-
-
-            <div class="severity_menu">
-                <strong>Тяжесть ДТП</strong>
-                <div>
-                    <input type="checkbox" name="checkbox_dtp" value="Легкий">
-                    <span>Лёгкий</span>
+            <div id="myDropdown" class="dropdown-content">
+                <div class="severity_menu">
+                    <strong>Тяжесть ДТП</strong>
+                    <div>
+                        <input type="checkbox" name="checkbox_dtp" value="Легкий">
+                        <span>Лёгкий</span>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="checkbox_dtp" value="С погибшими">
+                        <span>С погибшими</span>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="checkbox_dtp" value="Тяжёлый">
+                        <span>Тяжёлый</span>
+                    </div>
+                </div>
+                <div class="severity_menu">
+                    <strong>Освещенность</strong>
+                    <div>
+                        <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение включено">
+                        <span>В темное время суток, освещение включено</span>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение не включено">
+                        <span>В темное время суток, освещение не включено</span>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение отсутствует">
+                        <span>В темное время суток, освещение отсутствует</span>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="checkbox_dtp2" value="Светлое время суток">
+                        <span>Светлое время суток</span>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="checkbox_dtp2" value="Сумерки">
+                        <span>Сумерки</span>
+                    </div>
                 </div>
                 <div>
-                    <input type="checkbox" name="checkbox_dtp" value="С погибшими">
-                    <span>С погибшими</span>
+                    <input type="date" id="date1" name="date_dtp"/>
+                    <input type="date" id="date2" name="date_dtp"/>
                 </div>
-                <div>
-                    <input type="checkbox" name="checkbox_dtp" value="Тяжёлый">
-                    <span>Тяжёлый</span>
-                </div>
+                <input type="checkbox" id="checkbox_percentage" value="On">
+                <button type="button" class="submit" onclick="requestData();">Обновить</button>
             </div>
-            <div class="severity_menu">
-                <strong>Освещенность</strong>
-                <div>
-                    <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение включено">
-                    <span>В темное время суток, освещение включено</span>
-                </div>
-                <div>
-                    <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение не включено">
-                    <span>В темное время суток, освещение не включено</span>
-                </div>
-                <div>
-                    <input type="checkbox" name="checkbox_dtp2" value="В темное время суток, освещение отсутствует">
-                    <span>В темное время суток, освещение отсутствует</span>
-                </div>
-                <div>
-                    <input type="checkbox" name="checkbox_dtp2" value="Светлое время суток">
-                    <span>Светлое время суток</span>
-                </div>
-                <div>
-                    <input type="checkbox" name="checkbox_dtp2" value="Сумерки">
-                    <span>Сумерки</span>
-                </div>
-            </div>
-            <div>
-                <input type="date" id="date1" name="date"/>
-                <input type="date" id="date2" name="date"/>
-            </div>
-            <button type="button" class="submit" onclick="requestData(0);">Отправить</button>
-        </div>
         </form>
     </div>
 	<script type="text/javascript" src="{% static 'js/index.js' %}"></script>
-	<script>
-		regionData = {{ my_data|safe }};
-		mapJson = {{ map_data|safe }};
-
-        let ma = Math.max(...Object.values(regionData))
-        let mi = Math.min(...Object.values(regionData))
-        let delta = ma - mi
-        console.log(ma)
-        color_domain = [mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
-        ext_color_domain = [mi, mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
-        paint = d3.scale.threshold()
-            .domain(color_domain)
-            .range(["#00FF00", "#33CC00", "#669900", "#996600", "#CC3300", "#FF0000"]);
-	    mapRedraw(mapJson, regionData);
-    </script>
+	<script> mapJson = {{ map_data|safe }}; screenScaleUpdate(); requestData(); </script>
 </body>
 </html>

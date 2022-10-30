@@ -20,6 +20,9 @@ from . import views
 
 urlpatterns = [
     path('', views.index),
-    path('update_params/', views.ajax_get_view),
+    path('update_params/', views.update_params),
+    path('about_project/', views.about_project),
+    path('about_us/', views.about_us),
+    path('analytics/', views.analytics),
     path('admin/', admin.site.urls),
 ]

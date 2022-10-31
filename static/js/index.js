@@ -26,10 +26,22 @@ function requestData() {
     // participants_count количества
     var keys = [], values = [];
 
-    if (severityCheckedBoxes.length > 0) { keys.push('severity'); values.push(severityCheckedBoxes); }
-    if (participantCheckedBoxes.length > 0) { keys.push('participant_categories'); values.push(participantCheckedBoxes); }
-    if (lightCheckedBoxes.length > 0) { keys.push('light'); values.push(lightCheckedBoxes); }
-    if (dateRange[0] != '' && dateRange[1] != '') { keys.push('rta_date'); values.push(dateRange); }
+    if (severityCheckedBoxes.length > 0) {
+        keys.push('severity');
+        values.push(severityCheckedBoxes);
+    }
+    if (participantCheckedBoxes.length > 0) {
+        keys.push('participant_categories');
+        values.push(participantCheckedBoxes);
+    }
+    if (lightCheckedBoxes.length > 0) {
+        keys.push('light');
+        values.push(lightCheckedBoxes);
+    }
+    if (dateRange[0] !== '' && dateRange[1] !== '') {
+        keys.push('rta_date');
+        values.push(dateRange);
+    }
 
     const parametersString = JSON.stringify({'keys': keys, 'values': values});
     console.log(parametersString);
@@ -112,7 +124,7 @@ var lastResultInPercentage = false;
 
 //  -------------------------  LISTENERS  -------------------------  //
 
-window.addEventListener('resize', function(event) {
+window.addEventListener('resize', function (event) {
     screenScaleUpdate();
     mapRedraw(regionData);
 })

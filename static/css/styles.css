@@ -55,9 +55,9 @@ header img {
     transition: all 0.3s ease;
     position: relative;
     display: inline-block;
-    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    7px 7px 20px 0px rgba(0,0,0,.1),
-    4px 4px 5px 0px rgba(0,0,0,.1);
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+    7px 7px 20px 0px rgba(0, 0, 0, .1),
+    4px 4px 5px 0px rgba(0, 0, 0, .1);
     outline: none;
 }
 
@@ -65,10 +65,11 @@ header img {
     height: 0%;
     width: 2px;
 }
+
 .dropbtn:hover {
-    box-shadow: 4px 4px 6px 0 rgba(255,255,255,.5),
+    box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, .5),
     -4px -4px 6px 0 rgba(116, 125, 136, .5),
-    inset -4px -4px 6px 0 rgba(255,255,255,.2),
+    inset -4px -4px 6px 0 rgba(255, 255, 255, .2),
     inset 4px 4px 6px 0 rgba(0, 0, 0, .4);
 }
 
@@ -99,7 +100,8 @@ header img {
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {
     opacity: 1;
-    left: 0;}
+    left: 0;
+}
 
 .span_menu {
     font-style: normal;
@@ -132,45 +134,55 @@ header img {
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 #btn_blue {
     background: #0500FF;
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 #btn_brown {
     background: #924600;
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 #btn_gray {
     background: #858585;
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
-#btn_green {background: #33FF00;
+
+#btn_green {
+    background: #33FF00;
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 #btn_white {
     background: #FFFFFF;
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 #btn_orange {
     background: #FF7A00;
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 #btn_purple {
     background: #AD00FF;
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 #btn_yellow {
     background: #FAFF00;
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 #btn_red {
     background-color: #FF0000;
     border: 2px solid rgba(0, 0, 0, 0.5);
@@ -178,7 +190,7 @@ header img {
 }
 
 
-input[type='checkbox'].color_menu{
+input[type='checkbox'].color_menu {
     appearance: none;
     width: 40px;
     height: 40px;
@@ -188,11 +200,12 @@ input[type='checkbox'].color_menu{
     cursor: pointer;
     transition: all .2s ease-in-out;
 }
-input[type='checkbox'].color_menu:hover{
+
+input[type='checkbox'].color_menu:hover {
     filter: contrast(50%);
 }
 
-input[type='checkbox'].color_menu:checked{
+input[type='checkbox'].color_menu:checked {
     filter: contrast(50%);
 }
 
@@ -219,10 +232,12 @@ input[type='checkbox'].color_menu:checked{
     background-image: url('/static/files/children.svg');
     background-repeat: no-repeat;
 }
+
 #walk {
     background-image: url('/static/files/walk.svg');
     background-repeat: no-repeat;
 }
+
 #bicycle {
     background-image: url('/static/files/bicycle.svg');
     background-repeat: no-repeat;
@@ -239,7 +254,7 @@ input[type='checkbox'].color_menu:checked{
 }
 
 
-input[type='checkbox'].participant_menu{
+input[type='checkbox'].participant_menu {
     appearance: none;
     width: 60px;
     height: 60px;
@@ -248,11 +263,11 @@ input[type='checkbox'].participant_menu{
     transition: all .2s ease-in-out;
 }
 
-input[type='checkbox'].participant_menu:hover{
+input[type='checkbox'].participant_menu:hover {
     filter: contrast(50%);
 }
 
-input[type='checkbox'].participant_menu:checked{
+input[type='checkbox'].participant_menu:checked {
     filter: contrast(50%);
 }
 
@@ -269,12 +284,13 @@ input[type='checkbox'].participant_menu:checked{
     background-image: url('/static/files/man.svg');
     background-repeat: no-repeat;
 }
-#woman{
+
+#woman {
     background-image: url('/static/files/woman.svg');
     background-repeat: no-repeat;
 }
 
-input[type='checkbox'].gender{
+input[type='checkbox'].gender {
     appearance: none;
     width: 50px;
     height: 50px;
@@ -283,11 +299,11 @@ input[type='checkbox'].gender{
     transition: all .2s ease-in-out;
 }
 
-input[type='checkbox'].gender:hover{
+input[type='checkbox'].gender:hover {
     filter: contrast(50%);
 }
 
-input[type='checkbox'].gender:checked{
+input[type='checkbox'].gender:checked {
     filter: contrast(50%);
 }
 
@@ -305,6 +321,7 @@ input[type='checkbox'].gender:checked{
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;
 }
+
 #date2 {
     margin-top: 18px;
     font-family: 'Open Sans', sans-serif;
@@ -321,9 +338,9 @@ input[type='checkbox'].gender:checked{
     transition: all 0.3s ease;
     position: relative;
     display: inline-block;
-    box-shadow:inset 2px 2px 2px 0 rgba(255,255,255,.5),
-    7px 7px 20px 0 rgba(0,0,0,.1),
-    4px 4px 5px 0rgba(0,0,0,.1);
+    box-shadow: inset 2px 2px 2px 0 rgba(255, 255, 255, .5),
+    7px 7px 20px 0 rgba(0, 0, 0, .1),
+    4px 4px 5px 0 rgba(0, 0, 0, .1);
     outline: none;
 }
 
@@ -331,10 +348,11 @@ input[type='checkbox'].gender:checked{
     height: 0;
     width: 2px;
 }
+
 .submit:hover {
-    box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+    box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, .5),
     -4px -4px 6px 0 rgba(116, 125, 136, .5),
-    inset -4px -4px 6px 0 rgba(255,255,255,.2),
+    inset -4px -4px 6px 0 rgba(255, 255, 255, .2),
     inset 4px 4px 6px 0 rgba(0, 0, 0, .4);
 }
 

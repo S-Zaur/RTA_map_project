@@ -32,9 +32,10 @@ def update_params(request):
     jsn_parameters = json.loads(request.headers['Parameters'])
     percentage_mode = request.headers['Percentageresult']
 
-    keys = jsn_parameters['keys']  # ['severity', 'light', 'date', ...]
-    values = jsn_parameters[
-        'values']  # [['Легкий', 'С погибшими'], ['В темное время суток, освещение включено'], ['2022-10-18', '2022-10-20'], ...]
+    keys = jsn_parameters['keys']
+    # ['severity', 'light', 'date', ...]
+    values = jsn_parameters['values']
+    # [['Легкий', 'С погибшими'], ['В темное время суток, освещение включено'], ['2022-10-18', '2022-10-20'], ...]
     values = [[parse.unquote(j) for j in i] for i in values]
 
     print(keys)

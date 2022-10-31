@@ -31,6 +31,5 @@ def from_rta_mc_mv(columns, values):
 
 def from_rta_oc_mv(column, values):
     query = sql.SQL("SELECT region, count(*) FROM public.\"RTA\" where {column} = ANY(%s) group by region") \
-            .format(column=sql.Identifier(column))
+        .format(column=sql.Identifier(column))
     return query
-

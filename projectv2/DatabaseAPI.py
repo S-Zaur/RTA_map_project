@@ -21,7 +21,7 @@ class DatabaseApi:
     def __del__(self):
         self.connection.close()
 
-    def _to_dict(self,res):
+    def _to_dict(self, res):
         result = {}
         for i in res:
             result[i[0]] = i[1]
@@ -52,13 +52,13 @@ class DatabaseApi:
         return self.select_count_rta_by_key_values(key, [value])
 
     def select_count_rta_by_key_values(self, key, values):
-        self.cursor.execute(from_rta_oc_mv(key,values), (values,))
+        self.cursor.execute(from_rta_oc_mv(key, values), (values,))
         res = self.cursor.fetchall()
         return self._to_dict(res)
 
-    def select_count_rta_by_keys_values(self,keys,values):
-        query = sql.SQL(from_rta_mc_mv(keys,values)).format()
-        self.cursor.execute(query,values)
+    def select_count_rta_by_keys_values(self, keys, values):
+        query = sql.SQL(from_rta_mc_mv(keys, values)).format()
+        self.cursor.execute(query, values)
 
         res = self.cursor.fetchall()
         return self._to_dict(res)

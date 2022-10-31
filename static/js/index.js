@@ -1,142 +1,144 @@
 //  -------------------------  FUNCTIONS  -------------------------  //
 
-function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
+function showHidePanel() {
+    document.getElementById('myDropdown').classList.toggle('show');
 }
 
-function getRandomInt(max) {
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max + 1));
+function screenScaleUpdate() {
+    width = document.body.clientWidth;
+    height = width * aspectRatio;
+
+    mapSvg.attr('width', width).attr('height', height)
+    projection.scale(1400 * width / 1920).translate([width / 2, height / 2]);
 }
 
-function requestData(number) {
-    var url = 'update_params';
+function requestData() {
+    const url = 'update_params';
 
-    var checkedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_dtp]:checked'), ({value}) => encodeURIComponent(value));
-    var checkedBoxes2 = Array.from(document.querySelectorAll('input[name=checkbox_dtp2]:checked'), ({value}) => encodeURIComponent(value));
-    var d1 = document.querySelector('input[id="date1"]').value;
-    var d2 = document.querySelector('input[id="date2"]').value;
-    console.log(d1, d2)
-    var prmstring
-    if (checkedBoxes.length !== 0) {
-        prmstring = JSON.stringify({"prm_0": "severity", "prm_1": checkedBoxes})  //  checkedBoxes  на русский жалуется
-    } else if (checkedBoxes2.length !== 0) {
-        prmstring = JSON.stringify({"prm_0": "light", "prm_1": checkedBoxes2})
-    } else {
-        prmstring = JSON.stringify({"prm_0": "date", "prm_1": d1, "prm_2": d2})
-    }
-    console.log(prmstring)
+    //const colorCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_color]:checked'), ({value}) => encodeURIComponent(value));
+    const severityCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_severity]:checked'), ({value}) => encodeURIComponent(value));
+    const participantCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_participant]:checked'), ({value}) => encodeURIComponent(value));
+    //const genderCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_gender]:checked'), ({value}) => encodeURIComponent(value));
+    const lightCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_light]:checked'), ({value}) => encodeURIComponent(value));
+    const dateRange = Array.from(document.querySelectorAll('input[name=date_dtp]'), ({value}) => value);
+    const percentageMode = document.querySelector('input[id="checkbox_percentage"]').checked;
+    lastResultInPercentage = percentageMode;
+    // participants_count количества
+    var keys = [], values = [];
+
+    if (severityCheckedBoxes.length > 0) { keys.push('severity'); values.push(severityCheckedBoxes); }
+    if (participantCheckedBoxes.length > 0) { keys.push('participant_categories'); values.push(participantCheckedBoxes); }
+    if (lightCheckedBoxes.length > 0) { keys.push('light'); values.push(lightCheckedBoxes); }
+    if (dateRange[0] != '' && dateRange[1] != '') { keys.push('rta_date'); values.push(dateRange); }
+
+    const parametersString = JSON.stringify({'keys': keys, 'values': values});
+    console.log(parametersString);
+
     fetch(url, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'Prms': prmstring,
             'X-Requested-With': 'XMLHttpRequest',
+            'Parameters': parametersString,
+            'Percentageresult': percentageMode,
         },
     })
         .then(response => {
-            //console.log('got something');
             return response.json();
         })
         .then(data => {
-            //  REDRAW MAP
-            let ma = Math.max(...Object.values(data['my_data']))
-            let mi = Math.min(...Object.values(data['my_data']))
-            let delta = ma - mi
-            color_domain = [mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
-            ext_color_domain = [mi, mi + delta * 0.2, mi + delta * 0.4, mi + delta * 0.6, mi + delta * 0.8, mi + delta]
-            paint = d3.scale.threshold()
-                .domain(color_domain)
-                .range(["#00FF00", "#33CC00", "#669900", "#996600", "#CC3300", "#FF0000"]);
-            mapRedraw(mapJson, data['my_data']);
+            regionData = data['my_data']
+
+            regionDataArr = Object.values(regionData)
+
+            let maxV = Math.max(...regionDataArr)
+            let minV = Math.min(...regionDataArr)
+            let delta = maxV - minV
+
+            colorDomain = [minV + delta * 0.2, minV + delta * 0.4, minV + delta * 0.6, minV + delta * 0.8, minV + delta]
+            paint = d3.scale.threshold().domain(colorDomain).range(mapColors);
+
+            mapRedraw(regionData);
         })
 }
 
-function mapRedraw(map, data) {
+function mapRedraw(data) {
     var regionValues = {};
-    //console.log(typeof data);
-    //console.log(data);
-
     for (var key in data) {
-        //console.log(key)
         regionValues[key] = +data[key];
     }
 
-
-    //console.log(region_values);
-
-    //  Drawing Russia with cpoetry run python manage.py runserverolors
-
     mapSvg.selectAll("*").remove();
 
-    mapSvg.append("g")
-        .attr("class", "region")
-        .selectAll("path")
-        .data(topojson.object(map, map.objects.russia).geometries)
-        .enter().append("path")
-        .attr("d", path)
-        .style("fill", function (d) {
+    mapSvg.append('g')
+        .attr('class', 'region')
+        .selectAll('path')
+        .data(topojson.object(mapJson, mapJson.objects.russia).geometries)
+        .enter().append('path')
+        .attr('d', path)
+        .style('fill', function (d) {
             return paint(regionValues[d.properties.region]);
         })
-        .style("opacity", 0.8)  //  connect
+        .style('opacity', 0.8)
 
-        ///*  //  mouse things
-        .on("mouseover", function (d) {
-            d3.select(this).transition().duration(300).style("opacity", 1);
-            tooltipDiv.transition().duration(300)
-                .style("opacity", 1)
-            //tooltipDiv.text(nameById[d.properties.region] + " : " + rateById[d.properties.region])
-            tooltipDiv.text(d.properties.region + " : " + regionValues[d.properties.region] + '%')
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 30) + "px");
+        //  Mouse Events
+        .on('mouseover', function (d) {
+            d3.select(this).transition().duration(300).style('opacity', 1);
+            tooltipDiv.transition().duration(300).style('opacity', 1);
+            tooltipDiv.text(d.properties.region + ' : ' + regionValues[d.properties.region])
+                .style('left', (d3.event.pageX) + 'px')
+                .style('top', (d3.event.pageY - 30) + 'px');
+
+            if (lastResultInPercentage)
+                tooltipDiv.text(d.properties.region + ' : ' + regionValues[d.properties.region] + '%')
         })
-        .on("mouseout", function () {
-            d3.select(this)
-                .transition().duration(300)
-                .style("opacity", 0.8);
-            tooltipDiv.transition().duration(300)
-                .style("opacity", 0);
+
+        .on('mouseout', function () {
+            d3.select(this).transition().duration(300).style('opacity', 0.8);
+            tooltipDiv.transition().duration(300).style('opacity', 0);
         })
-    //*/
-
-    /*  //  points
-    d3.tsv("cities.tsv", function(error, data) {
-        var city = svg.selectAll("g.city")
-        .data(data)
-        .enter()
-        .append("g")
-        .attr("class", "city")
-        .attr("transform", function(d) { return "translate(" + projection([d.lon, d.lat]) + ")"; });
-
-        city.append("circle")
-        .attr("r", 3)
-        .style("fill", "lime")
-        .style("opacity", 0.75);
-
-        city.append("text")
-        .attr("x", 5)
-        .text(function(d) { return d.City; });
-    });
-    */
 };
 
 //  -------------------------  SOME IMPORTANT VARIABLES  -------------------------  //
 
-var width = document.documentElement.scrollWidth, height = 768;  //  960 500
+const aspectRatio = 9 / 16;
+var width = document.body.clientWidth;
+var height = width * aspectRatio;
 
-var color_domain = [20, 40, 60, 80, 100]
-var ext_color_domain = [0, 20, 40, 60, 80, 100]
-var legend_labels = ["< 50", "50+", "150+", "350+", "750+", "> 1500"]  //  will be changed for percentage ig
-var paint = d3.scale.threshold()
-    .domain(color_domain)
-    .range(["#7FFF7F", "#92E55B", "#AFCC3D", "#B29523", "#99460F", "#7F0000"]);
+const mapColors = ['#3FFF3F', '#84FF32', '#D3FF26', '#FFD119', '#FF6D0C', '#FF0000'];
+
+var regionData;
+var lastResultInPercentage = false;
+
+//  -------------------------  LISTENERS  -------------------------  //
+
+window.addEventListener('resize', function(event) {
+    screenScaleUpdate();
+    mapRedraw(regionData);
+})
+
+$(".color").on("click", function () {
+    $(".color_menu").toggleClass("show_colour")
+})
+$(".severity").on("click", function () {
+    $(".severity_menu").toggleClass("show_severity")
+})
+$(".participant").on("click", function () {
+    $(".participant_category_menu").toggleClass("show_participant")
+})
+$(".gender_").on("click", function () {
+    $(".gender_menu").toggleClass("show_gender")
+})
+$(".light").on("click", function () {
+    $(".light_menu").toggleClass("show_light")
+})
 
 //  -------------------------  CONTAINERS  -------------------------  //
 
-var mapSvg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .style("margin", "10px auto");
+var mapSvg = d3.select('body').append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .style('margin', '10px auto');
 
 var projection = d3.geo.albers()
     .rotate([-105, 0])
@@ -147,10 +149,11 @@ var projection = d3.geo.albers()
 
 var path = d3.geo.path().projection(projection);
 
-var tooltipDiv = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
+var tooltipDiv = d3.select('body').append('div')
+    .attr('class', 'tooltip')
+    .style('opacity', 0);
 
+/*
 var legend = mapSvg.selectAll("g.legend")
     .data(ext_color_domain)
     .enter().append("g")
@@ -178,5 +181,6 @@ legend.append("text")
     .text(function (d, i) {
         return legend_labels[i];
     });
+*/
 
 //  -------------------------  EVERYTHING ELSE  -------------------------  //

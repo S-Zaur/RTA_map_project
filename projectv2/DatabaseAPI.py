@@ -4,6 +4,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from multipledispatch import dispatch
 from .consts import regions
 import math
+from .query_generator import *
 
 
 class DatabaseApi:
@@ -19,6 +20,12 @@ class DatabaseApi:
 
     def __del__(self):
         self.connection.close()
+
+    def _to_dict(self,res):
+        result = {}
+        for i in res:
+            result[i[0]] = i[1]
+        return result
 
     def select_rta_count(self):
         query = '''select count(*) from public."RTA"'''
@@ -37,39 +44,29 @@ class DatabaseApi:
 
     def select_count_rta_by_region(self):
         query = '''select region, count(*) from public."RTA" group by region'''
-        res = {}
         self.cursor.execute(query)
-        for i in self.cursor.fetchall():
-            if i[0] == 'Республика Крым' or i[0] == 'Севастополь':
-                continue
-            res[regions[i[0]]] = i[1]
-        return res
+        res = self.cursor.fetchall()
+        return self._to_dict(res)
 
     def select_count_rta_by_key_value(self, key, value):
         return self.select_count_rta_by_key_values(key, [value])
 
     def select_count_rta_by_key_values(self, key, values):
+        self.cursor.execute(from_rta_oc_mv(key,values), (values,))
+        res = self.cursor.fetchall()
+        return self._to_dict(res)
 
-        query = sql.SQL("SELECT region, count(*) FROM public.\"RTA\" where {column} = ANY(%s) group by region") \
-            .format(column=sql.Identifier(key))
-        res = {}
-        self.cursor.execute(query, (values,))
-        for i in self.cursor.fetchall():
-            if i[0] == 'Республика Крым' or i[0] == 'Севастополь':
-                continue
-            res[regions[i[0]]] = i[1]
-        return res
+    def select_count_rta_by_keys_values(self,keys,values):
+        query = sql.SQL(from_rta_mc_mv(keys,values)).format()
+        self.cursor.execute(query,values)
+
+        res = self.cursor.fetchall()
+        return self._to_dict(res)
 
     def rta_between(self, from_date, to_date):
         query = sql.SQL(
             "SELECT region, count(*) FROM public.\"RTA\" where \"rta_date\" BETWEEN %s and %s group by region")
-        res = {}
-        self.cursor.execute(query, (from_date, to_date))
-        for i in self.cursor.fetchall():
-            if i[0] == 'Республика Крым' or i[0] == 'Севастополь':
-                continue
-            res[regions[i[0]]] = i[1]
-        return res
+        return self._to_dict(self.cursor.execute(query, (from_date, to_date)))
 
     def as_percentage(self, res):
         for key, _ in res.items():

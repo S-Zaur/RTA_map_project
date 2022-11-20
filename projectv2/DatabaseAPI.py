@@ -1,4 +1,7 @@
+import os
+
 import psycopg2
+from dotenv import load_dotenv
 from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from multipledispatch import dispatch
@@ -6,14 +9,12 @@ from .consts import regions
 import math
 from .query_generator import *
 
+load_dotenv()
+
 
 class DatabaseApi:
     def __init__(self):
-        self.connection = psycopg2.connect(user="postgres",
-                                           password="11111",
-                                           host="127.0.0.1",
-                                           port="5432",
-                                           database="rta")
+        self.connection = psycopg2.connect(os.getenv('CONN_STR'))
         self.connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         self.cursor = self.connection.cursor()
         self.all = self.select_count_rta_by_region()

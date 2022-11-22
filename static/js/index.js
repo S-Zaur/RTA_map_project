@@ -12,36 +12,45 @@ function screenScaleUpdate() {
     projection.scale(1400 * width / 1920).translate([width / 2, height / 2]);
 }
 
+function parametersListenersSet(parameters) {
+    all_prms = [...Object.keys(parameters)]
+
+    all_prms.forEach(function(x) {
+        var el = '.' + x
+        console.log(el, el + '_menu');
+        $(el).on('click', function () {
+            $(el + '_menu').toggleClass('show_colour');
+        })
+    })
+}
+
 function requestData() {
     const url = 'update_params';
 
-    //const colorCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_color]:checked'), ({value}) => encodeURIComponent(value));
+    const colorCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_color]:checked'), ({value}) => encodeURIComponent(value));
     const severityCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_severity]:checked'), ({value}) => encodeURIComponent(value));
     const participantCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_participant]:checked'), ({value}) => encodeURIComponent(value));
-    //const genderCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_gender]:checked'), ({value}) => encodeURIComponent(value));
+    const genderCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_gender]:checked'), ({value}) => encodeURIComponent(value));
     const lightCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_light]:checked'), ({value}) => encodeURIComponent(value));
     const dateRange = Array.from(document.querySelectorAll('input[name=date_dtp]'), ({value}) => value);
-    const percentageMode = document.querySelector('input[id="checkbox_percentage"]').checked;
+
+    const percentageMode = document.querySelector('input[id=checkbox_percentage]').checked;
+    const tableUsed = document.querySelector('input[name=radio_table]:checked').value;
     lastResultInPercentage = percentageMode;
-    // participants_count количества
+    console.log(tableUsed)
     var keys = [], values = [];
 
-    if (severityCheckedBoxes.length > 0) {
-        keys.push('severity');
-        values.push(severityCheckedBoxes);
-    }
-    if (participantCheckedBoxes.length > 0) {
-        keys.push('participant_categories');
-        values.push(participantCheckedBoxes);
-    }
-    if (lightCheckedBoxes.length > 0) {
-        keys.push('light');
-        values.push(lightCheckedBoxes);
-    }
-    if (dateRange[0] !== '' && dateRange[1] !== '') {
-        keys.push('rta_date');
-        values.push(dateRange);
-    }
+    if (colorCheckedBoxes.length > 0) { keys.push('vehicles__color'); values.push(colorCheckedBoxes); }  // !!!
+    if (severityCheckedBoxes.length > 0) { keys.push('severity'); values.push(severityCheckedBoxes); }
+    if (participantCheckedBoxes.length > 0) { keys.push('participant_categories'); values.push(participantCheckedBoxes); }
+    if (genderCheckedBoxes.length > 0) { keys.push('participants__gender'); values.push(genderCheckedBoxes); }  // !!!
+    if (lightCheckedBoxes.length > 0) { keys.push('light'); values.push(lightCheckedBoxes); }
+    if (dateRange[0] != '' && dateRange[1] != '') { keys.push('rta_date'); values.push(dateRange); }
+
+    all_prms.forEach(function(prm_name) {
+        const checkedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_' + prm_name + ']:checked'), ({value}) => encodeURIComponent(value));
+        if (checkedBoxes.length > 0) { keys.push(prm_name); values.push(checkedBoxes); }
+    })
 
     const parametersString = JSON.stringify({'keys': keys, 'values': values});
     console.log(parametersString);
@@ -53,6 +62,7 @@ function requestData() {
             'X-Requested-With': 'XMLHttpRequest',
             'Parameters': parametersString,
             'Percentageresult': percentageMode,
+            'Tableused': tableUsed,
         },
     })
         .then(response => {
@@ -69,7 +79,7 @@ function requestData() {
 
             colorDomain = [minV + delta * 0.2, minV + delta * 0.4, minV + delta * 0.6, minV + delta * 0.8, minV + delta]
             paint = d3.scale.threshold().domain(colorDomain).range(mapColors);
-
+            console.log('norm')
             mapRedraw(regionData);
         })
 }
@@ -89,7 +99,9 @@ function mapRedraw(data) {
         .enter().append('path')
         .attr('d', path)
         .style('fill', function (d) {
-            return paint(regionValues[d.properties.region]);
+            if (d.properties.region in regionValues)
+                return paint(regionValues[d.properties.region]);
+            return nanColor;
         })
         .style('opacity', 0.8)
 
@@ -118,31 +130,32 @@ var width = document.body.clientWidth;
 var height = width * aspectRatio;
 
 const mapColors = ['#3FFF3F', '#84FF32', '#D3FF26', '#FFD119', '#FF6D0C', '#FF0000'];
+const nanColor = '#BFBFBF'
 
 var regionData;
 var lastResultInPercentage = false;
 
 //  -------------------------  LISTENERS  -------------------------  //
 
-window.addEventListener('resize', function (event) {
+window.addEventListener('resize', function(event) {
     screenScaleUpdate();
     mapRedraw(regionData);
 })
 
 $(".color").on("click", function () {
-    $(".color_menu").toggleClass("show_colour")
+    $(".color_menu").toggleClass("show_colour");
 })
 $(".severity").on("click", function () {
-    $(".severity_menu").toggleClass("show_severity")
+    $(".severity_menu").toggleClass("show_severity");
 })
 $(".participant").on("click", function () {
-    $(".participant_category_menu").toggleClass("show_participant")
+    $(".participant_category_menu").toggleClass("show_participant");
 })
 $(".gender_").on("click", function () {
-    $(".gender_menu").toggleClass("show_gender")
+    $(".gender_menu").toggleClass("show_gender");
 })
 $(".light").on("click", function () {
-    $(".light_menu").toggleClass("show_light")
+    $(".light_menu").toggleClass("show_light");
 })
 
 //  -------------------------  CONTAINERS  -------------------------  //

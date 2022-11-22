@@ -8,123 +8,142 @@
 
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
-    <script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
-    <script type="text/javascript" src="https://d3js.org/topojson.v0.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/topojson.v0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- <script type="text/javascript" src="http://d3js.org/topojson.v1.min.js"></script> -->
 </head>
 <body>
-<header class="header_inners">
-    <a href="/"><img src="{% static 'files/logo.png' %}"></a>
-    <div id="header_refs">
-        <a class="header_ref" href="/analytics/">Аналитика</a>
-        <a class="header_ref" href="/about_project/">О проекте</a>
-        <a class="header_ref" href="/about_us/">О нас</a>
-    </div>
-</header>
+    <header class="header_inners">
+        <a href="/"><img src="{% static 'files/logo.png' %}"></a>
+        <div id="header_refs">
+            <a class="header_ref" href="/analytics/">Аналитика</a>
+            <a class="header_ref" href="/about_project/">О проекте</a>
+            <a class="header_ref" href="/about_us/">О нас</a>
+        </div>
+    </header>
 
-<div class="dropdown">
-    <button onclick="showHidePanel()" class="dropbtn">Фильтр</button>
-    <div id="myDropdown" class="dropdown-content">
-        <div class="span_menu color">
-            <div class="img">Цвет транспортного средства</div>
-        </div>
-        <div class="color_menu">
-            <div>
-                <input id="btn_red" type="checkbox" class="color_menu" name="checkbox_color" value="Красный">
-                <input id="btn_orange" type="checkbox" class="color_menu" name="checkbox_color" value="Оранжевый">
-                <input id="btn_yellow" type="checkbox" class="color_menu" name="checkbox_color" value="Желтый">
-                <input id="btn_green" type="checkbox" class="color_menu" name="checkbox_color" value="Зеленый">
-                <input id="btn_blue" type="checkbox" class="color_menu" name="checkbox_color" value="Синий">
-            </div>
-            <div>
-                <input id="btn_purple" type="checkbox" class="color_menu" name="checkbox_color" value="Фиолетовый">
-                <input id="btn_brown" type="checkbox" class="color_menu" name="checkbox_color" value="Коричневый">
-                <input id="btn_white" type="checkbox" class="color_menu" name="checkbox_color" value="Белый">
-                <input id="btn_gray" type="checkbox" class="color_menu" name="checkbox_color" value="Серый">
-                <input id="btn_black" type="checkbox" class="color_menu" name="checkbox_color" value="Черный">
-            </div>
-        </div>
-        <div class="span_menu severity">
-            <div class="img">Тяжесть ДТП</div>
-        </div>
-        <div class="severity_menu">
-            <div>
-                <input type="checkbox" name="checkbox_severity" value="Легкий">
-                <span>Лёгкий</span>
-            </div>
-            <div>
-                <input type="checkbox" name="checkbox_severity" value="С погибшими">
-                <span>С погибшими</span>
-            </div>
-            <div>
-                <input type="checkbox" name="checkbox_severity" value="Тяжёлый">
-                <span>Тяжёлый</span>
-            </div>
-        </div>
-        <div class="span_menu participant">
-            <div class="img">Категория участников</div>
-        </div>
-        <div class="participant_category_menu">
-            <div>
-                <input id="children" type="checkbox" class="participant_menu" name="checkbox_participant" value="Дети">
-                <input id="walk" type="checkbox" class="participant_menu" name="checkbox_participant" value="Пешеходы">
-                <input id="bicycle" type="checkbox" class="participant_menu" name="checkbox_participant"
-                       value="Велосипедисты">
-                <input id="motocross" type="checkbox" class="participant_menu" name="checkbox_participant"
-                       value="Мотоциклисты">
-                <input id="bus" type="checkbox" class="participant_menu" name="checkbox_participant"
-                       value="Общ. транспорт">
-            </div>
-        </div>
-        <div class="span_menu gender_">
-            <div class="img">Пол участников</div>
-        </div>
-        <div class="gender_menu">
-            <div>
-                <input id="man" type="checkbox" class="gender" name="checkbox_gender" value="Мужчина">
-                <input id="woman" type="checkbox" class="gender" name="checkbox_gender" value="Женщина">
-            </div>
-        </div>
-        <div class="span_menu light">
-            <div class="img">Освещенность</div>
-        </div>
-        <div class="light_menu">
-            <div>
-                <input type="checkbox" name="checkbox_light" value="В темное время суток, освещение включено">
-                <span>В темное время суток, освещение включено</span>
-            </div>
-            <div>
-                <input type="checkbox" name="checkbox_light" value="В темное время суток, освещение не включено">
-                <span>В темное время суток, освещение не включено</span>
-            </div>
-            <div>
-                <input type="checkbox" name="checkbox_light" value="В темное время суток, освещение отсутствует">
-                <span>В темное время суток, освещение отсутствует</span>
-            </div>
-            <div>
-                <input type="checkbox" name="checkbox_light" value="Светлое время суток">
-                <span>Светлое время суток</span>
-            </div>
-            <div>
-                <input type="checkbox" name="checkbox_light" value="Сумерки">
-                <span>Сумерки</span>
-            </div>
-        </div>
-        <div>
-            <input type="date" id="date1" name="date_dtp"/>
-            <input type="date" id="date2" name="date_dtp"/>
-        </div>
-        <input type="checkbox" id="checkbox_percentage" value="On">
-        <input type="button" class="submit" onclick="requestData();" value="Применить">
-    </div>
-</div>
+    <div class="dropdown">
+        <button onclick="showHidePanel()" class="dropbtn">Фильтр</button>
+        <div id="myDropdown" class="dropdown-content">
 
-<script type="text/javascript" src="{% static 'js/index.js' %}"></script>
-<script> mapJson = {{ map_data|safe }};
-screenScaleUpdate();
-requestData(); </script>
+            <div class="span_menu color"><div class="img">Цвет транспортного средства</div></div>
+            <div class="color_menu">
+                <div>
+                    <input id="btn_red" type="checkbox" class="color_menu" name="checkbox_color" value="Красный">
+                    <input id="btn_orange" type="checkbox" class="color_menu" name="checkbox_color" value="Оранжевый">
+                    <input id="btn_yellow" type="checkbox" class="color_menu" name="checkbox_color" value="Желтый">
+                    <input id="btn_green" type="checkbox" class="color_menu" name="checkbox_color" value="Зеленый">
+                    <input id="btn_blue" type="checkbox" class="color_menu" name="checkbox_color" value="Синий">
+                </div>
+                <div>
+                    <input id="btn_purple" type="checkbox" class="color_menu" name="checkbox_color" value="Фиолетовый">
+                    <input id="btn_brown" type="checkbox" class="color_menu" name="checkbox_color" value="Коричневый">
+                    <input id="btn_white" type="checkbox" class="color_menu" name="checkbox_color" value="Белый">
+                    <input id="btn_gray" type="checkbox" class="color_menu" name="checkbox_color" value="Серый">
+                    <input id="btn_black" type="checkbox" class="color_menu" name="checkbox_color" value="Черный">
+                </div>
+            </div>
+
+            <div class="span_menu severity"><div class="img">Тяжесть ДТП</div></div>
+            <div class="severity_menu">
+                <div>
+                    <input type="checkbox" name="checkbox_severity" value="Легкий">
+                    <span>Лёгкий</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_severity" value="С погибшими">
+                    <span>С погибшими</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_severity" value="Тяжёлый">
+                    <span>Тяжёлый</span>
+                </div>
+            </div>
+
+            <div class="span_menu participant"><div class="img">Категория участников</div></div>
+            <div class="participant_category_menu">
+                <div>
+                    <input id="children" type="checkbox" class="participant_menu" name="checkbox_participant" value="Дети">
+                    <input id="walk" type="checkbox" class="participant_menu" name="checkbox_participant" value="Пешеход">
+                    <input id="bicycle" type="checkbox" class="participant_menu" name="checkbox_participant" value="Велосипедист">
+                    <input id="motocross" type="checkbox" class="participant_menu" name="checkbox_participant" value="Мотоциклист">
+                    <input id="bus" type="checkbox" class="participant_menu" name="checkbox_participant" value="Автобус">
+                </div>
+            </div>
+
+            <div class="span_menu gender_"><div class="img">Пол участников</div></div>
+            <div class="gender_menu">
+                <div>
+                    <input id="man" type="checkbox" class="gender" name="checkbox_gender" value="True">
+                    <input id="woman" type="checkbox" class="gender" name="checkbox_gender" value="False">
+                </div>
+            </div>
+
+            <div class="span_menu light"><div class="img">Освещенность</div></div>
+            <div class="light_menu">
+                <div>
+                    <input type="checkbox" name="checkbox_light" value="В темное время суток, освещение включено">
+                    <span>В темное время суток, освещение включено</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_light" value="В темное время суток, освещение не включено">
+                    <span>В темное время суток, освещение не включено</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_light" value="В темное время суток, освещение отсутствует">
+                    <span>В темное время суток, освещение отсутствует</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_light" value="Светлое время суток">
+                    <span>Светлое время суток</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="checkbox_light" value="Сумерки">
+                    <span>Сумерки</span>
+                </div>
+            </div>
+
+            <div>
+                <input type="date" id="date1" name="date_dtp"/>
+                <input type="date" id="date2" name="date_dtp"/>
+            </div>
+
+            {% for key, arr in long_prms.items %}
+                <div class="span_menu {{key}}"><div class="img">{{key}}</div></div>
+                <div class="{{key}}_menu color_menu">
+                    {% for val in arr %}
+                        <div>
+                            <input type="checkbox" name="checkbox_{{key}}" value="{{val}}">
+                            <span>{{val}}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div>
+                <input type="radio" id="radio_table_0" name="radio_table" value="RTA" checked="checked"/>
+                <label for="radio_table_0">RTA</label>
+            </div>
+            <div>
+                <input type="radio" id="radio_table_1" name="radio_table" value="Vehicles"/>
+                <label for="radio_table_1">Vehicles</label>
+            </div>
+            <div>
+                <input type="radio" id="radio_table_2" name="radio_table" value="Participants"/>
+                <label for="radio_table_2">Participants</label>
+            </div>
+            <input type="checkbox" id="checkbox_percentage" value="On">
+            <label for="checkbox_percentage">Show in percentage</label>
+            <input type="button" class="submit" onclick="requestData();" value="Применить">
+
+        </div>
+    </div>
+
+	<script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+    <script> parametersListenersSet({{ long_prms|safe }}); </script>
+	<script> mapJson = {{ map_data|safe }}; screenScaleUpdate(); requestData(); </script>
 </body>
 </html>

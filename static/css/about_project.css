@@ -35,10 +35,10 @@ header img {
 }
 
 a {
-    color: #000;
-    text-decoration: none;
-    border: none;
-    font-family: 'Open Sans';
+  color: #000;
+  text-decoration: none;
+  border: none;
+  font-family: 'Open Sans';
 }
 
 img {
@@ -65,7 +65,7 @@ img {
     font-size: 36px;
 }
 
-.text {
+.text{
     margin-left: 8%;
     margin-right: 8%;
     margin-top: 120px;

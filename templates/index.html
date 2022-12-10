@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Карта ДТП</title>
+	<meta charset="utf-8">
+	<title>Карта ДТП</title>
+	
+	{% load static %}
 
-    {% load static %}
-
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
 	<script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
 	<script type="text/javascript" src="https://d3js.org/topojson.v0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- <script type="text/javascript" src="http://d3js.org/topojson.v1.min.js"></script> -->
+	<!-- <script type="text/javascript" src="http://d3js.org/topojson.v1.min.js"></script> -->
 </head>
 <body>
     <header class="header_inners">
@@ -67,18 +67,18 @@
             <div class="participant_category_menu">
                 <div>
                     <input id="children" type="checkbox" class="participant_menu" name="checkbox_participant" value="Дети">
-                    <input id="walk" type="checkbox" class="participant_menu" name="checkbox_participant" value="Пешеход">
-                    <input id="bicycle" type="checkbox" class="participant_menu" name="checkbox_participant" value="Велосипедист">
-                    <input id="motocross" type="checkbox" class="participant_menu" name="checkbox_participant" value="Мотоциклист">
-                    <input id="bus" type="checkbox" class="participant_menu" name="checkbox_participant" value="Автобус">
+                    <input id="walk" type="checkbox" class="participant_menu" name="checkbox_participant" value="Пешеходы">
+                    <input id="bicycle" type="checkbox" class="participant_menu" name="checkbox_participant" value="Велосипедисты">
+                    <input id="motocross" type="checkbox" class="participant_menu" name="checkbox_participant" value="Мотоциклисты">
+                    <input id="bus" type="checkbox" class="participant_menu" name="checkbox_participant" value="Общ. транспорт">
                 </div>
             </div>
 
             <div class="span_menu gender_"><div class="img">Пол участников</div></div>
             <div class="gender_menu">
                 <div>
-                    <input id="man" type="checkbox" class="gender" name="checkbox_gender" value="True">
-                    <input id="woman" type="checkbox" class="gender" name="checkbox_gender" value="False">
+                    <input id="man" type="checkbox" class="gender" name="checkbox_gender" value="Мужчина">
+                    <input id="woman" type="checkbox" class="gender" name="checkbox_gender" value="Женщина">
                 </div>
             </div>
 
@@ -112,9 +112,9 @@
             </div>
 
             {% for key, arr in long_prms.items %}
-                <div class="span_menu {{key}}"><div class="img">{{key}}</div></div>
-                <div class="{{key}}_menu color_menu">
-                    {% for val in arr %}
+                <div class="span_menu {{key}}"><div class="img">{{arr.0}}</div></div>
+                <div class="{{key}}_menu hidden_menu">
+                    {% for val in arr.1 %}
                         <div>
                             <input type="checkbox" name="checkbox_{{key}}" value="{{val}}">
                             <span>{{val}}</span>
@@ -123,18 +123,6 @@
                 </div>
             {% endfor %}
 
-            <div>
-                <input type="radio" id="radio_table_0" name="radio_table" value="RTA" checked="checked"/>
-                <label for="radio_table_0">RTA</label>
-            </div>
-            <div>
-                <input type="radio" id="radio_table_1" name="radio_table" value="Vehicles"/>
-                <label for="radio_table_1">Vehicles</label>
-            </div>
-            <div>
-                <input type="radio" id="radio_table_2" name="radio_table" value="Participants"/>
-                <label for="radio_table_2">Participants</label>
-            </div>
             <input type="checkbox" id="checkbox_percentage" value="On">
             <label for="checkbox_percentage">Show in percentage</label>
             <input type="button" class="submit" onclick="requestData();" value="Применить">

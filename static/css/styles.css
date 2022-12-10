@@ -119,6 +119,15 @@ header img {
     padding-left: 25px;
 }
 
+.hidden_menu {
+    display: none;
+}
+
+.show_menu {
+    display: inline-block;
+    opacity: 1;
+}
+
 .color_menu {
     display: none;
 }
@@ -195,6 +204,24 @@ input[type='checkbox'].color_menu:hover{
 }
 
 input[type='checkbox'].color_menu:checked{
+    filter: contrast(50%);
+}
+
+input[type='checkbox'].hidden_menu{
+    appearance: none;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}
+input[type='checkbox'].hidden_menu:hover{
+    filter: contrast(50%);
+}
+
+input[type='checkbox'].hidden_menu:checked{
     filter: contrast(50%);
 }
 

@@ -26,7 +26,7 @@ def select_rta(columns, values):
 
         select = select[:-3] + ") and"
     select = select[:-3] + "GROUP BY region"
-    select = select.replace('WHGROUP','GROUP')
+    select = select.replace('WHGROUP', 'GROUP')
     return select
 
 
@@ -53,7 +53,7 @@ def select_participants(columns, values):
         select = select[:-3] + ") and"
 
     select = select[:-3] + "GROUP BY region"
-    select = select.replace('WHGROUP','GROUP')
+    select = select.replace('WHGROUP', 'GROUP')
     return select
 
 
@@ -70,5 +70,79 @@ def select_vehicles(columns, values):
         select = select[:-3] + ") and"
 
     select = select[:-3] + "GROUP BY region"
-    select = select.replace('WHGROUP','GROUP')
+    select = select.replace('WHGROUP', 'GROUP')
     return select
+
+
+def super_select(rta_cv=None,
+                 vehicle_cv=None,
+                 participant_cv=None):
+    if rta_cv is None and vehicle_cv is None and participant_cv is None:
+        return """SELECT region, count(*) FROM public."RTA" GROUP BY region"""
+    query = """SELECT region, count(*) FROM"""
+    if participant_cv is not None and vehicle_cv is not None:
+        query += """"participants" JOIN "vehicles" ON participants.vehicle_id = vehicles.id 
+        JOIN "RTA" ON "RTA".id  = vehicles.rta_id """
+    elif participant_cv is not None:
+        query += """ "participants" JOIN "RTA" ON participants.rta_id = "RTA".id"""
+    elif vehicle_cv is not None:
+        query += """ "vehicles" JOIN "RTA" ON vehicles.rta_id = "RTA".id"""
+    else:
+        query += """ "RTA\""""
+    query += """ WHERE\n"""
+
+    if participant_cv is not None:
+        for i in range(len(participant_cv[0])):
+            query += "("
+            if participant_cv[0][i] == "violations":
+                for j in participant_cv[1][i]:
+                    if j == "{}":
+                        query += " {} = '{}' or".format(participant_cv[0][i], j)
+                    else:
+                        query += " '{}' = ANY({}) or".format(j, participant_cv[0][i])
+            elif participant_cv[0][i] == "gender":
+                for j in participant_cv[1][i]:
+                    query += " {} = '{}' or".format(participant_cv[0][i], j != 'Мужчина')
+            else:
+                for j in participant_cv[1][i]:
+                    if j != "null":
+                        query += " {} = '{}' or".format(participant_cv[0][i], j)
+                    else:
+                        query += " {} is NULL or".format(participant_cv[0][i])
+            query = query[:-3] + ") and\n"
+
+    if vehicle_cv is not None:
+        for i in range(len(vehicle_cv[0])):
+            query += "("
+
+            for j in vehicle_cv[1][i]:
+                if j != "null":
+                    query += " vehicles.{} = '{}' or".format(vehicle_cv[0][i], j)
+                else:
+                    query += " vehicles.{} is NULL or".format(vehicle_cv[0][i])
+            query = query[:-3] + ") and\n"
+
+    if rta_cv is not None:
+        for i in range(len(rta_cv[0])):
+            query += "("
+
+            if rta_cv[0][i] == "rta_date":
+                query += " {} BETWEEN '{}' and '{}'---".format(rta_cv[0][i], rta_cv[1][i][0], rta_cv[1][i][1])
+
+            elif rta_cv[0][i] in ["weather", "nearby", "road_conditions", "participant_categories"]:
+                for j in rta_cv[1][i]:
+                    if type(j) != str:
+                        for k in j:
+                            query += " '{}' = ANY({}) or".format(k, rta_cv[0][i])
+                    else:
+                        query += " '{}' = ANY({}) or".format(j, rta_cv[0][i])
+            else:
+                if len(rta_cv[1][i]) > 1:
+                    query += "{} IN {}   ".format(rta_cv[0][i], tuple(rta_cv[1][i]))
+                else:
+                    query += "{} = '{}'   ".format(rta_cv[0][i], rta_cv[1][i][0])
+
+            query = query[:-3] + ") and\n"
+
+    query = query[:-4] + "\nGROUP BY region"
+    return query

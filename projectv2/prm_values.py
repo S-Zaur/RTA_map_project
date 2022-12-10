@@ -1,7 +1,3 @@
-tags = ['Дорожно-транспортные происшествия',
-        'ДТП и пострадавшие дети в возрасте до 16 лет',
-        'ДТП и пострадавшие пешеходы, из-за наезда на пешеходов, на пешеходных переходах, по вине пешеходов']
-
 nearby = ['АЗС', 'Автовокзал (автостанция)', 'Автостоянка (не отделённая от проезжей части)',
           'Автостоянка (отделенная от проезжей части)', 'Административные здания',
           'Аэропорт, ж/д вокзал (ж/д станция), речной или морской порт (пристань)', 'Внутридворовая территория',
@@ -69,7 +65,7 @@ participants__health_status = [
     'Скончался на месте ДТП до приезда скорой медицинской помощи',
     'Скончался на месте ДТП по прибытию скорой медицинской помощи, но до транспортировки в мед. организацию',
     'Скончался на месте ДТП по прибытию скорой медицинской помощи, но до транспортировки в медицинское учреждение',
-    'Скончался при транспортировке'] # , None
+    'Скончался при транспортировке']  # , None
 
 participants__violations = ['Выезд на полосу встречного движения',
                             'Выезд на полосу встречного движения в местах, где это запрещено',
@@ -226,7 +222,7 @@ vehicles__brand = ['ABM', 'AC', 'ACURA', 'ADMIRAL', 'AERMACCHI', 'AJP', 'ALFA RO
                    'Прочие марки автобусов', 'Прочие марки автокранов', 'Прочие марки грузовых ТС',
                    'Прочие марки легких коммерческих ТС', 'Прочие марки легковых ТС', 'Прочие марки мотоциклов',
                    'Прочие марки седельных тягачей', 'Прочие марки строительной техники', 'СимАЗ', 'ТАГАЗ (TAGAZ)',
-                   'УАЗ', 'УРАЛ'] # , None
+                   'УАЗ', 'УРАЛ']  # , None
 
 vehicles__category = ['А-класс (особо малый) до 3,5 м', 'В-класс (малый) до 3,9 м',
                       'С-класс (малый средний, компактный) до 4,3 м', 'D-класс (средний) до 4,6 м',
@@ -278,27 +274,34 @@ vehicles__participants__years_of_driving_experience = [1, 2, 3, 4, 5, 6, 7, 8, 9
                                                        51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66,
                                                        67, 68, 69, 70, 73, 74]
 
-all_params = {'tags': tags,
-        'category': category,
-        'participants_count': participants_count,
-        'dead_count': dead_count,
-        'injured_count': injured_count,
-        'nearby': nearby,
-        'weather': weather,
-        'road_conditions': road_conditions,
-        'participants__role': participants__role,
-        'participants__health_status': participants__health_status,
-        'participants__years_of_driving_experience': vehicles__participants__years_of_driving_experience,
-        'participants__violations': participants__violations,
-        'vehicles__brand': vehicles__brand,
-        'vehicles__category': vehicles__category} # 14
+all_params = {
+    'category': ['Категория', category],
+    'participants_count': ['Количество участников', participants_count],
+    'dead_count': ['Количество погибших', dead_count],
+    'injured_count': ['Количество пострадавших', injured_count],
+    'nearby': ['Объекты поблизости', nearby],
+    'weather': ['Погода', weather],
+    'road_conditions': ['Состояние дороги', road_conditions],
+    'participants__role': ['Роль участника', participants__role],
+    'participants__health_status': ['Здоровье участника', participants__health_status],
+    'participants__years_of_driving_experience': ['Водительский опыт',
+                                                  vehicles__participants__years_of_driving_experience],
+    'participants__violations': ['Нарушения участников', participants__violations],
+    'vehicles__brand': ['Марка машины', vehicles__brand],
+    'vehicles__category': ['Категория машины', vehicles__category]}  # 14
 
-#light severity participants__gender participant_categories vehicles__color # 5
+# light severity participants__gender participant_categories vehicles__color  #  5
 
-rta_params = ['tags', 'light', 'category', 'participants_count', 'dead_count', 'injured_count', 'severity', 'nearby', 'weather', 'road_conditions', 'participant_categories'] # 11
-vehicles_params = ['brand', 'color', 'category'] # 3
-participants_params = ['role', 'gender', 'health_status', 'years_of_driving_experience', 'violations'] # 5
+rta_prm_names = ['light', 'category', 'participants_count', 'dead_count', 'injured_count', 'severity', 'nearby',
+                 'weather', 'road_conditions', 'participant_categories', 'rta_date']  # 11
+vehicle_prm_names = ['vehicles__brand', 'vehicles__color', 'vehicles__category']  # 3
+participant_prm_names = ['participants__role', 'participants__gender', 'participants__health_status',
+                         'participants__years_of_driving_experience', 'participants__violations']  # 5
 
-#all rta = ['tags', 'light', 'category', 'participants_count', 'dead_count', 'injured_count', 'severity', 'region', 'nearby', 'weather', 'road_conditions', 'participant_categories']
-#all vehicles = ['year', 'vehicles__brand', 'model', 'color', 'category']
-#all participants = ['participants__role', 'gender', 'participants__health_status', 'vehicles__participants__years_of_driving_experience', 'participants__violations']
+# rta_prm_names = ['tags', 'light', 'category', 'participants_count', 'dead_count', 'injured_count', 'severity', 'nearby', 'weather', 'road_conditions', 'participant_categories'] # 11
+# vehicle_prm_names = ['brand', 'color', 'category']  #  3
+# participant_prm_names = ['role', 'gender', 'health_status', 'years_of_driving_experience', 'violations']  #  5
+
+# all rta = ['tags', 'light', 'category', 'participants_count', 'dead_count', 'injured_count', 'severity', 'region', 'nearby', 'weather', 'road_conditions', 'participant_categories']
+# all vehicles = ['year', 'vehicles__brand', 'model', 'color', 'category']
+# all participants = ['participants__role', 'gender', 'participants__health_status', 'vehicles__participants__years_of_driving_experience', 'participants__violations']

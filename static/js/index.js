@@ -19,7 +19,7 @@ function parametersListenersSet(parameters) {
         var el = '.' + x
         console.log(el, el + '_menu');
         $(el).on('click', function () {
-            $(el + '_menu').toggleClass('show_colour');
+            $(el + '_menu').toggleClass('show_menu');
         })
     })
 }
@@ -35,9 +35,8 @@ function requestData() {
     const dateRange = Array.from(document.querySelectorAll('input[name=date_dtp]'), ({value}) => value);
 
     const percentageMode = document.querySelector('input[id=checkbox_percentage]').checked;
-    const tableUsed = document.querySelector('input[name=radio_table]:checked').value;
     lastResultInPercentage = percentageMode;
-    console.log(tableUsed)
+
     var keys = [], values = [];
 
     if (colorCheckedBoxes.length > 0) { keys.push('vehicles__color'); values.push(colorCheckedBoxes); }  // !!!
@@ -62,7 +61,6 @@ function requestData() {
             'X-Requested-With': 'XMLHttpRequest',
             'Parameters': parametersString,
             'Percentageresult': percentageMode,
-            'Tableused': tableUsed,
         },
     })
         .then(response => {
@@ -79,7 +77,7 @@ function requestData() {
 
             colorDomain = [minV + delta * 0.2, minV + delta * 0.4, minV + delta * 0.6, minV + delta * 0.8, minV + delta]
             paint = d3.scale.threshold().domain(colorDomain).range(mapColors);
-            console.log('norm')
+
             mapRedraw(regionData);
         })
 }
@@ -109,12 +107,18 @@ function mapRedraw(data) {
         .on('mouseover', function (d) {
             d3.select(this).transition().duration(300).style('opacity', 1);
             tooltipDiv.transition().duration(300).style('opacity', 1);
-            tooltipDiv.text(d.properties.region + ' : ' + regionValues[d.properties.region])
+
+            if (d.properties.region in regionValues)
+                value = regionValues[d.properties.region]
+            else
+                value = 'Нет данных'
+
+            tooltipDiv.text(d.properties.region + ' : ' + value)
                 .style('left', (d3.event.pageX) + 'px')
                 .style('top', (d3.event.pageY - 30) + 'px');
 
             if (lastResultInPercentage)
-                tooltipDiv.text(d.properties.region + ' : ' + regionValues[d.properties.region] + '%')
+                tooltipDiv.text(d.properties.region + ' : ' + value + '%')
         })
 
         .on('mouseout', function () {

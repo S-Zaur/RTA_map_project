@@ -1,11 +1,14 @@
+import multiprocessing
 from urllib import parse
 
 from django.http import JsonResponse
 from django.shortcuts import render
-from .DatabaseAPI import DatabaseApi
+from .DatabaseAPI import DatabaseApi, add_stat
 import json
 
-from .prm_values import all_params, rta_params, vehicles_params, participants_params
+from .prm_values import all_params, rta_prm_names, vehicle_prm_names, participant_prm_names
+
+db = DatabaseApi()
 
 
 def index(request):
@@ -31,56 +34,44 @@ def analytics(request):
 def update_params(request):
     jsn_parameters = json.loads(request.headers['Parameters'])
     percentage_mode = request.headers['Percentageresult']
-    table_used = request.headers['Tableused']
+    stat = db.get_stat(jsn_parameters)
+    if stat is not None:
+        if percentage_mode == 'true':
+            stat = db.as_percentage(stat)
+        return JsonResponse(stat)
 
-    # Можно переместить на после выкидывания параметров v v v
-    keys = jsn_parameters['keys']  # ['severity', 'light', 'date', ...]
-    values = jsn_parameters['values']
-    # [['Легкий', 'С погибшими'], ['В темное время суток, освещение включено'], ['2022-10-18', '2022-10-20'], ...]
-    values = [[parse.unquote(j) for j in i] for i in values]
+    appear_keys = jsn_parameters['keys']
+    appear_values = jsn_parameters['values']
+    appear_values = [[parse.unquote(j) for j in i] for i in appear_values]
 
-    print(table_used)
-    print(keys)
-    print(values)
-    print('^ ^ ^ OLD/NEW v v v')
+    rta_keys, rta_vals = appear_keys.copy(), appear_values
+    vehicle_keys, vehicle_vals = [], []
+    participant_keys, participant_vals = [], []
 
-    db = DatabaseApi()
-
-    match table_used:  # Выброс ненужных параметров
-        case 'Vehicles':
-            include_arr = vehicles_params
-            keys = [key[10:] for key in keys]
-            print('vehicles_params')
-        case 'Participants':
-            include_arr = participants_params
-            keys = [key[14:] for key in keys]
-            print('participants_params')
-        case _:
-            include_arr = rta_params
-            print('rta_params')
-
-    appear_keys = keys.copy()
     for key in appear_keys:
-        print(key, 'in', include_arr)
-        if key not in include_arr:
-            ind = keys.index(key)
-            print(ind)
-            del keys[ind]
-            del values[ind]
+        if key not in rta_prm_names:
+            ind = rta_keys.index(key)
 
-    print(keys)
-    print(values)
+            if key not in vehicle_prm_names:
+                participant_keys.append(rta_keys[ind][14:])
+                participant_vals.append(rta_vals[ind])
+            else:
+                vehicle_keys.append(rta_keys[ind][10:])
+                vehicle_vals.append(rta_vals[ind])
 
-    match table_used:  # Выброс ненужных параметров
-        case 'Vehicles':
-            js_data = db.select_count_vehicles(keys, values)
-        case 'Participants':
-            js_data = db.select_count_participants(keys, values)
-        case _:
-            js_data = db.select_count_rta_by_keys_values(keys, values)
+            del rta_keys[ind]
+            del rta_vals[ind]
+
+    js_data = db.select((rta_keys, rta_vals) if len(rta_keys) > 0 else None,
+                        (vehicle_keys, vehicle_vals) if len(vehicle_keys) > 0 else None,
+                        (participant_keys, participant_vals) if len(participant_keys) > 0 else None)
+
     if percentage_mode == 'true':
         js_data = db.as_percentage(js_data)
 
     data = {'my_data': js_data}
-    print(data)
+
+    process = multiprocessing.Process(target=add_stat, args=(jsn_parameters, data))
+    process.start()
+
     return JsonResponse(data)

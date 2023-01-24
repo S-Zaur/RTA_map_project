@@ -97,7 +97,6 @@ class DatabaseApi:
         query = super_select(rta_cv=rta_cv,
                              vehicle_cv=vehicle_cv,
                              participant_cv=participant_cv)
-        print(query)
         self.cursor.execute(query)
         res = self.cursor.fetchall()
         return _to_dict(res)

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Предсказание ДТП</title>
+
+	{% load static %}
+
+	<link rel="stylesheet" href="{% static 'css/prediction.css' %}">
+
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/topojson.v0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <header class="header_inners">
+        <a href="/"><img src="{% static 'files/logo.png' %}"></a>
+        <div id="header_refs">
+            <a class="header_ref" href="/prediction/">Предсказание</a>
+            <a class="header_ref" href="/analytics/">Аналитика</a>
+            <a class="header_ref" href="/about_project/">О проекте</a>
+            <a class="header_ref" href="/about_us/">О нас</a>
+        </div>
+    </header>
+
+    <div class="dropdown">
+        <button class="dropbtn">Фильтр</button>
+        <div id="dropdown" class="dropdown-content">
+
+            <div class="span_menu color_span_menu"><div class="img">Цвет транспортного средства</div></div>
+            <div class="color_menu hidden_menu">
+                <div>
+                    <input id="btn_red" class="color_menu" type="radio" name="radio_color" value="Красный" checked>
+                    <input id="btn_orange" class="color_menu" type="radio" name="radio_color" value="Оранжевый">
+                    <input id="btn_yellow" class="color_menu" type="radio" name="radio_color" value="Желтый">
+                    <input id="btn_green" class="color_menu" type="radio" name="radio_color" value="Зеленый">
+                    <input id="btn_blue" class="color_menu" type="radio" name="radio_color" value="Синий">
+                </div>
+                <div>
+                    <input id="btn_purple" class="color_menu" type="radio" name="radio_color" value="Фиолетовый">
+                    <input id="btn_brown" class="color_menu" type="radio" name="radio_color" value="Коричневый">
+                    <input id="btn_white" class="color_menu" type="radio" name="radio_color" value="Белый">
+                    <input id="btn_gray" class="color_menu" type="radio" name="radio_color" value="Серый">
+                    <input id="btn_black" class="color_menu" type="radio" name="radio_color" value="Черный">
+                </div>
+            </div>
+
+            <div class="span_menu gender_span_menu"><div class="img">Пол участников</div></div>
+            <div class="gender_menu hidden_menu">
+                <div>
+                    <input id="man" class="gender" type="radio" name="radio_gender" value="Мужской" checked>
+                    <input id="woman" class="gender" type="radio" name="radio_gender" value="Женский">
+                </div>
+            </div>
+
+            {% for key, arr in params_for_prediction.items %}
+                <div class="span_menu {{ key }}_span_menu"><div class="img">{{ arr.0 }}</div></div>
+                <div class="{{ key }}_menu hidden_menu">
+                    {% for val in arr.1 %}
+                            <div>
+                        {% if val == arr.1.0 %}
+                                <input type="radio" name="radio_{{ key }}" value="{{ val }}" checked>
+                        {% else %}
+                                <input type="radio" name="radio_{{ key }}" value="{{ val }}">
+                        {% endif %}
+                                <span>{{ val }}</span>
+                            </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div>
+                <input type="number" name="year" step="1" value="2023"/>
+            </div>
+
+            <div>
+                <span id="answer"></span>
+                <input type="button" class="submit" onclick="requestData();" value="Применить">
+            </div>
+        </div>
+    </div>
+
+	<script type="text/javascript" src="{% static 'js/prediction.js' %}"></script>
+    <script> parametersListenersSet({{ params_for_prediction|safe }}); </script>
+</body>
+</html>

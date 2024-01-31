@@ -15,7 +15,7 @@ function screenScaleUpdate() {
 function parametersListenersSet(parameters) {
     all_prms = [...Object.keys(parameters)];
 
-    all_prms.forEach(function(prm_name) {
+    all_prms.forEach(function (prm_name) {
         var el = '.' + prm_name
         console.log(el, el + '_menu');
         $(el).on('click', function () {
@@ -27,12 +27,12 @@ function parametersListenersSet(parameters) {
 function requestData() {
     const url = 'update_params';
 
-    const colorCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_color]:checked'), ({value}) => encodeURIComponent(value));
-    const severityCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_severity]:checked'), ({value}) => encodeURIComponent(value));
-    const participantCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_participant]:checked'), ({value}) => encodeURIComponent(value));
-    const genderCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_gender]:checked'), ({value}) => encodeURIComponent(value));
-    const lightCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_light]:checked'), ({value}) => encodeURIComponent(value));
-    const dateRange = Array.from(document.querySelectorAll('input[name=date_dtp]'), ({value}) => value);
+    const colorCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_color]:checked'), ({ value }) => encodeURIComponent(value));
+    const severityCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_severity]:checked'), ({ value }) => encodeURIComponent(value));
+    const participantCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_participant]:checked'), ({ value }) => encodeURIComponent(value));
+    const genderCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_gender]:checked'), ({ value }) => encodeURIComponent(value));
+    const lightCheckedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_light]:checked'), ({ value }) => encodeURIComponent(value));
+    const dateRange = Array.from(document.querySelectorAll('input[name=date_dtp]'), ({ value }) => value);
 
     const percentageMode = document.querySelector('input[id=checkbox_percentage]').checked;
     lastResultInPercentage = percentageMode;
@@ -46,12 +46,12 @@ function requestData() {
     if (lightCheckedBoxes.length > 0) { keys.push('light'); values.push(lightCheckedBoxes); }
     if (dateRange[0] != '' && dateRange[1] != '') { keys.push('rta_date'); values.push(dateRange); }
 
-    all_prms.forEach(function(prm_name) {
-        const checkedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_' + prm_name + ']:checked'), ({value}) => encodeURIComponent(value));
+    all_prms.forEach(function (prm_name) {
+        const checkedBoxes = Array.from(document.querySelectorAll('input[name=checkbox_' + prm_name + ']:checked'), ({ value }) => encodeURIComponent(value));
         if (checkedBoxes.length > 0) { keys.push(prm_name); values.push(checkedBoxes); }
     })
 
-    const parametersString = JSON.stringify({'keys': keys, 'values': values});
+    const parametersString = JSON.stringify({ 'keys': keys, 'values': values });
     console.log(parametersString);
 
     fetch(url, {
@@ -141,7 +141,7 @@ var lastResultInPercentage = false;
 
 //  -------------------------  LISTENERS  -------------------------  //
 
-window.addEventListener('resize', function(event) {
+window.addEventListener('resize', function (event) {
     screenScaleUpdate();
     mapRedraw(regionData);
 })

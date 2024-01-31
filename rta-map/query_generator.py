@@ -1,17 +1,21 @@
-from psycopg2 import sql
-
-
 def select_rta(columns, values):
-    select = '''SELECT region, count(*) FROM public."RTA" WHERE'''
+    select = """SELECT region, count(*) FROM public."rta" WHERE"""
     for i in range(len(columns)):
         select += "("
 
         # Фильтр для данных date
         if columns[i] == "rta_date":
-            select += " {} BETWEEN '{}' and '{}'---".format(columns[i], values[i][0], values[i][1])
+            select += " {} BETWEEN '{}' and '{}'---".format(
+                columns[i], values[i][0], values[i][1]
+            )
 
         # Фильтр для данных text[]
-        elif columns[i] in ["weather", "nearby", "road_conditions", "participant_categories"]:
+        elif columns[i] in [
+            "weather",
+            "nearby",
+            "road_conditions",
+            "participant_categories",
+        ]:
             for j in values[i]:
                 if type(j) != str:
                     for k in j:
@@ -26,12 +30,12 @@ def select_rta(columns, values):
 
         select = select[:-3] + ") and"
     select = select[:-3] + "GROUP BY region"
-    select = select.replace('WHGROUP', 'GROUP')
+    select = select.replace("WHGROUP", "GROUP")
     return select
 
 
 def select_participants(columns, values):
-    select = '''SELECT region, count(*) FROM public."participants" inner join "RTA" R on R.id = participants.rta_id WHERE'''
+    select = """SELECT region, count(*) FROM public."participants" inner join "rta" R on R.id = participants.rta_id WHERE"""
     for i in range(len(columns)):
         select += "("
 
@@ -53,12 +57,12 @@ def select_participants(columns, values):
         select = select[:-3] + ") and"
 
     select = select[:-3] + "GROUP BY region"
-    select = select.replace('WHGROUP', 'GROUP')
+    select = select.replace("WHGROUP", "GROUP")
     return select
 
 
 def select_vehicles(columns, values):
-    select = '''SELECT region, count(*) FROM public."vehicles" join "RTA" R on R.id = vehicles.rta_id WHERE'''
+    select = """SELECT region, count(*) FROM public."vehicles" join "rta" R on R.id = vehicles.rta_id WHERE"""
     for i in range(len(columns)):
         select += "("
 
@@ -70,25 +74,23 @@ def select_vehicles(columns, values):
         select = select[:-3] + ") and"
 
     select = select[:-3] + "GROUP BY region"
-    select = select.replace('WHGROUP', 'GROUP')
+    select = select.replace("WHGROUP", "GROUP")
     return select
 
 
-def super_select(rta_cv=None,
-                 vehicle_cv=None,
-                 participant_cv=None):
+def super_select(rta_cv=None, vehicle_cv=None, participant_cv=None):
     if rta_cv is None and vehicle_cv is None and participant_cv is None:
-        return """SELECT region, count(*) FROM public."RTA" GROUP BY region"""
+        return """SELECT region, count(*) FROM public."rta" GROUP BY region"""
     query = """SELECT region, count(*) FROM"""
     if participant_cv is not None and vehicle_cv is not None:
         query += """"participants" JOIN "vehicles" ON participants.vehicle_id = vehicles.id 
-        JOIN "RTA" ON "RTA".id  = vehicles.rta_id """
+        JOIN "rta" ON "rta".id  = vehicles.rta_id """
     elif participant_cv is not None:
-        query += """ "participants" JOIN "RTA" ON participants.rta_id = "RTA".id"""
+        query += """ "participants" JOIN "rta" ON participants.rta_id = "rta".id"""
     elif vehicle_cv is not None:
-        query += """ "vehicles" JOIN "RTA" ON vehicles.rta_id = "RTA".id"""
+        query += """ "vehicles" JOIN "rta" ON vehicles.rta_id = "rta".id"""
     else:
-        query += """ "RTA\""""
+        query += """ "rta\""""
     query += """ WHERE\n"""
 
     if participant_cv is not None:
@@ -102,7 +104,9 @@ def super_select(rta_cv=None,
                         query += " '{}' = ANY({}) or".format(j, participant_cv[0][i])
             elif participant_cv[0][i] == "gender":
                 for j in participant_cv[1][i]:
-                    query += " {} = '{}' or".format(participant_cv[0][i], j != 'Мужчина')
+                    query += " {} = '{}' or".format(
+                        participant_cv[0][i], j != "Мужчина"
+                    )
             else:
                 for j in participant_cv[1][i]:
                     if j != "null":
@@ -127,9 +131,16 @@ def super_select(rta_cv=None,
             query += "("
 
             if rta_cv[0][i] == "rta_date":
-                query += " {} BETWEEN '{}' and '{}'---".format(rta_cv[0][i], rta_cv[1][i][0], rta_cv[1][i][1])
+                query += " {} BETWEEN '{}' and '{}'---".format(
+                    rta_cv[0][i], rta_cv[1][i][0], rta_cv[1][i][1]
+                )
 
-            elif rta_cv[0][i] in ["weather", "nearby", "road_conditions", "participant_categories"]:
+            elif rta_cv[0][i] in [
+                "weather",
+                "nearby",
+                "road_conditions",
+                "participant_categories",
+            ]:
                 for j in rta_cv[1][i]:
                     if type(j) != str:
                         for k in j:

@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Карта ДТП - Аналитика</title>
 
     {% load static %}
 
-	<link rel="stylesheet" href="{% static 'css/analytics.css' %}">
-</head>
-<body>
+    <link rel="stylesheet" href="{% static 'css/analytics.css' %}" />
+  </head>
+  <body>
     <header class="header_inners">
-        <a href="/"><img src="{% static 'files/logo.png' %}"></a>
-        <div id="header_refs">
-            <a class="header_ref" href="/analytics/">Аналитика</a>
-            <a class="header_ref" href="/about_project/">О проекте</a>
-            <a class="header_ref" href="/about_us/">О нас</a>
-        </div>
+      <a href="/"><img src="{% static 'files/logo.png' %}" /></a>
+      <div id="header_refs">
+        <a class="header_ref" href="/analytics/">Аналитика</a>
+        <a class="header_ref" href="/about_project/">О проекте</a>
+        <a class="header_ref" href="/about_us/">О нас</a>
+      </div>
     </header>
     <div class="main" style="position: relative">
-        <img src="{% static 'files/bgblurredmap.png' %}">
-        <div class="fonWhite">
-            <h1 class="oProject">Аналитика ДТП</h1>
-            <div class="text">
-                <h1>1 229 922</h1>
-                <p>Аварий за период с 2017 по 2022</p>
-            </div>
-            <div class="text">
-                <h1>3 016 000</h1>
-                <p>Пострадавших за период с 2017 по 2022</p>
-            </div>
+      <img src="{% static 'files/bgblurredmap.png' %}" />
+      <div class="fonWhite">
+        <h1 class="oProject">Аналитика ДТП</h1>
+        <div class="text">
+          <h1>1 229 922</h1>
+          <p>Аварий за период с 2017 по 2022</p>
         </div>
+        <div class="text">
+          <h1>3 016 000</h1>
+          <p>Пострадавших за период с 2017 по 2022</p>
+        </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
